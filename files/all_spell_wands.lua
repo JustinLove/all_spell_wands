@@ -17,10 +17,21 @@ function asw_wand_add_random_cards( gun, entity_id, level )
 	local bullet_card
 	--card = GetRandomActionWithType( x, y, level, ACTION_TYPE_PROJECTILE )
 	card = "LIGHT"
-	for i = 1, card_count do
+	for i = 1, card_count-1 do
 		card = GetRandomAction( x, y, level, i )
 		AddGunAction( entity_id, card )
 	end
+
+	if Random(0,1) == 1 then
+		card = GetRandomActionWithType( x, y, level, ACTION_TYPE_PROJECTILE )
+	elseif Random(0,1) == 1 then
+		card = GetRandomActionWithType( x, y, level, ACTION_TYPE_STATIC_PROJECTILE )
+	elseif Random(0,1) == 1 then
+		card = GetRandomActionWithType( x, y, level, ACTION_TYPE_STATIC_MATERIAL )
+	else
+		card = GetRandomActionWithType( x, y, level, ACTION_TYPE_PASSIVE)
+	end
+	AddGunAction( entity_id, card )
 end
 
 function asw_wand_add_always_cast( gun, entity_id, level )

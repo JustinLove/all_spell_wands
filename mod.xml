@@ -1,0 +1,6 @@
+<Mod
+	name="All Spell Wands"
+	description="Allows all spell types to spawn on wands."
+	request_no_api_restrictions="0" 
+> 
+</Mod>

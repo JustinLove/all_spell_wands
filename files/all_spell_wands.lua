@@ -1,11 +1,33 @@
 dofile_once("mods/all_spell_wands/files/spell_metadata.lua")
 
-function asw_random_modifier( level )
-	return asw_spells_which_draw[Random(1, #asw_spells_which_draw)]
+function asw_random_modifier( x, y, level, i )
+	local crazy = 0
+	local card
+	while crazy < 100 do
+		crazy = crazy + 1
+		card = GetRandomAction( x, y, level, i + crazy*71 )
+		if asw_spell_draw[card] > 0 then
+			return card
+		end
+	end
+	print("we went crazy")
+	return card
+	--return asw_spells_which_draw[Random(1, #asw_spells_which_draw)]
 end
 
-function asw_random_terminal( level )
-	return asw_spells_terminal[Random(1, #asw_spells_terminal)]
+function asw_random_terminal( x, y, level, i )
+	local crazy = 0
+	local card
+	while crazy < 100 do
+		crazy = crazy + 1
+		card = GetRandomAction( x, y, level, i + crazy*10 )
+		if asw_spell_draw[card] < 1 then
+			return card
+		end
+	end
+	print("we went crazy")
+	return card
+	--return asw_spells_terminal[Random(1, #asw_spells_terminal)]
 end
 
 asw_setup_spell_draw()
@@ -20,11 +42,8 @@ function asw_pick_wand_type()
 	SetRandomSeed( x, y )
 
 	local random = ModSettingGet("all_spell_wands.random_chance") or 100
-	print(tostring(random))
 	local modified = ModSettingGet("all_spell_wands.vanilla_modified_chance") or 0
-	print(tostring(modified))
 	local vanilla = ModSettingGet("all_spell_wands.vanilla_chance") or 0
-	print(tostring(vanilla))
 	local total = random + modified + vanilla
 	local r = Random(0, total)
 	if r <= random then
@@ -38,9 +57,9 @@ end
 
 function asw_get_random_action_with_type( x, y, level, type, i )
 	if type == ACTION_TYPE_PROJECTILE then
-		return asw_random_terminal( level )
+		return asw_random_terminal( x, y, level, i )
 	elseif type == ACTION_TYPE_MODIFIER then
-		return asw_random_modifier( level )
+		return asw_random_modifier( x, y, level, i )
 	else
 		return GetRandomActionWithType( x, y, level, type, i )
 	end
@@ -75,9 +94,9 @@ function asw_wand_add_random_cards( gun, entity_id, level )
 	else
 		for i = 1, card_count-1 do
 			if Random(1, card_count) <= actions_per_round then
-				card = asw_random_terminal( level )
+				card = asw_random_terminal( x, y, level, i )
 			else
-				card = asw_random_modifier( level )
+				card = asw_random_modifier( x, y, level, i )
 				actions_per_round = actions_per_round + asw_spell_draw[card]
 			end
 			actions_per_round = actions_per_round - 1
@@ -85,7 +104,7 @@ function asw_wand_add_random_cards( gun, entity_id, level )
 		end
 	end
 
-	card = asw_random_terminal( level )
+	card = asw_random_terminal( x, y, level, card_count )
 	AddGunAction( entity_id, card )
 end
 

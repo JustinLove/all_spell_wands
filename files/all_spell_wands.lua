@@ -10,6 +10,32 @@ end
 
 asw_setup_spell_draw()
 
+ASW_RANDOM = 1
+ASW_VANILLA_MODIFIED = 2
+ASW_VANILLA = 3
+
+function asw_pick_wand_type()
+	local entity_id = GetUpdatedEntityID()
+	local x, y = EntityGetTransform( entity_id )
+	SetRandomSeed( x, y )
+
+	local random = ModSettingGet("all_spell_wands.random_chance") or 100
+	print(tostring(random))
+	local modified = ModSettingGet("all_spell_wands.vanilla_modified_chance") or 0
+	print(tostring(modified))
+	local vanilla = ModSettingGet("all_spell_wands.vanilla_chance") or 0
+	print(tostring(vanilla))
+	local total = random + modified + vanilla
+	local r = Random(0, total)
+	if r <= random then
+		return ASW_RANDOM
+	elseif r <= random + modified then
+		return ASW_VANILLA_MODIFIED
+	else
+		return ASW_VANILLA
+	end
+end
+
 function asw_get_random_action_with_type( x, y, level, type, i )
 	if type == ACTION_TYPE_PROJECTILE then
 		return asw_random_terminal( level )

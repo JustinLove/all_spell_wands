@@ -35,7 +35,7 @@ local function test_wands()
 end
 
 function OnPlayerSpawned( player_entity ) -- This runs when player entity has been created
-	--test_wands()
+	test_wands()
 end
 
 -- This code runs when all mods' filesystems are registered

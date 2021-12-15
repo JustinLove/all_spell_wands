@@ -123,5 +123,14 @@ function asw_vanilla_modified_wand_add_random_cards( gun, entity_id, level )
 end
 
 asw_base_wand_add_random_cards = wand_add_random_cards
-wand_add_random_cards = asw_wand_add_random_cards
---wand_add_random_cards = asw_vanilla_modified_wand_add_random_cards
+
+function wand_add_random_cards( gun, entity_id, level )
+	local kind = asw_pick_wand_type()
+	if kind == ASW_RANDOM then
+		asw_wand_add_random_cards( gun, entity_id, level )
+	elseif kind == ASW_VANILLA_MODIFIED then
+		asw_vanilla_modified_wand_add_random_cards( gun, entity_id, level )
+	else
+		asw_base_wand_add_random_cards( gun, entity_id, level )
+	end
+end

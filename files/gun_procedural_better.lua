@@ -1,5 +1,4 @@
 dofile_once("mods/all_spell_wands/files/all_spell_wands.lua")
-asw_base_generate_gun = generate_gun
 
 local function shuffleTable( t )
 	assert( t, "shuffleTable() expected a table, got nil" )
@@ -93,7 +92,7 @@ local function asw_vanilla_modified_wand_add_random_cards( gun, entity_id, level
 	end
 end
 
-function generate_gun( cost, level, force_unshuffle )
+function asw_generate_gun( cost, level, force_unshuffle, kind )
 	local entity_id = GetUpdatedEntityID()
 	local x, y = EntityGetTransform( entity_id )
 	SetRandomSeed( x, y )
@@ -271,9 +270,25 @@ function generate_gun( cost, level, force_unshuffle )
 
 	ComponentSetValue( ability_comp, "item_recoil_recovery_speed", 15.0 ) -- TODO: implement logic for setting this
 
-	asw_wand_add_random_cards( gun, entity_id, level )
-	--asw_vanilla_modified_wand_add_random_cards( gun, entity_id, level )
+	if kind == ASW_RANDOM then
+		asw_wand_add_random_cards( gun, entity_id, level )
+	else
+		asw_vanilla_modified_wand_add_random_cards( gun, entity_id, level )
+	end
 
 	local wand = GetWand( gun )
 	SetWandSprite( entity_id, ability_comp, wand.file, wand.grip_x, wand.grip_y, (wand.tip_x - wand.grip_x), (wand.tip_y - wand.grip_y) )
+end
+
+asw_base_generate_gun = generate_gun
+
+function generate_gun( cost, level, force_unshuffle )
+	local kind = asw_pick_wand_type()
+	if kind == ASW_RANDOM then
+		asw_generate_gun( cost, level, force_unshuffle, kind )
+	elseif kind == ASW_VANILLA_MODIFIED then
+		asw_generate_gun( cost, level, force_unshuffle, kind )
+	else
+		asw_base_generate_gun( cost, level, force_unshuffle )
+	end
 end

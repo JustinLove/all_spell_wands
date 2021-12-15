@@ -10,6 +10,16 @@ end
 
 asw_setup_spell_draw()
 
+function asw_get_random_action_with_type( x, y, level, type, i )
+	if type == ACTION_TYPE_PROJECTILE then
+		return asw_random_terminal( level )
+	elseif type == ACTION_TYPE_MODIFIER then
+		return asw_random_modifier( level )
+	else
+		return GetRandomActionWithType( x, y, level, type, i )
+	end
+end
+
 function asw_wand_add_random_cards( gun, entity_id, level )
 
 	local is_rare = gun["is_rare"]

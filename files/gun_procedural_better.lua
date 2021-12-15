@@ -12,6 +12,87 @@ local function shuffleTable( t )
 	end
 end
 
+local function asw_vanilla_modified_wand_add_random_cards( gun, entity_id, level )
+	-- stuff in the gun
+	local good_cards = 5
+	if( Random(0,100) < 7 ) then good_cards = Random(20,50) end
+
+	if( is_rare == 1 ) then
+		good_cards = good_cards * 2
+	end
+
+	local orig_level = level
+	level = level - 1
+	local deck_capacity = gun["deck_capacity"]
+	local actions_per_round = gun["actions_per_round"]
+	local card_count = Random( 1, 3 ) 
+	local bullet_card = asw_get_random_action_with_type( x, y, level, ACTION_TYPE_PROJECTILE, 0 )
+	local card = ""
+	local random_bullets = 0 
+	local good_card_count = 0
+
+	if( Random(0,100) < 50 and card_count < 3 ) then card_count = card_count + 1 end 
+	
+	if( Random(0,100) < 10 or is_rare == 1 ) then 
+		card_count = card_count + Random( 1, 2 )
+	end
+
+	good_cards = Random( 5, 45 )
+	card_count = Random( 0.51 * deck_capacity, deck_capacity )
+	card_count = clamp( card_count, 1, deck_capacity-1 )
+
+	-- card count is in between 1 and 6
+
+	if( Random(0,100) < (orig_level*10)-5 ) then
+		random_bullets = 1
+	end
+
+	if( Random( 0, 100 ) < 4 or is_rare == 1 ) then
+		asw_wand_add_always_cast( gun, entity_id, level )
+	end
+
+	-- HOMING, DAMAGE
+
+	-- ARROW, BUBBLESHOT
+
+	if( card_count < 3 ) then
+		if( card_count > 1 and Random( 0, 100 ) < 20 ) then
+			card = asw_get_random_action_with_type( x, y, level, ACTION_TYPE_MODIFIER, 2 )
+			AddGunAction( entity_id, card )
+			card_count = card_count - 1
+		end
+
+		for i=1,card_count do
+			AddGunAction( entity_id, bullet_card )
+		end
+	else
+		-- DRAW_MANY + MOD
+		if( Random( 0, 100 ) < 40 ) then
+			card = asw_get_random_action_with_type( x, y, level, ACTION_TYPE_DRAW_MANY, 1 )
+			AddGunAction( entity_id, card )
+			card_count = card_count - 1
+		end
+
+		-- add another DRAW_MANY
+		if( card_count > 3 and Random( 0, 100 ) < 40 ) then
+			card = asw_get_random_action_with_type( x, y, level, ACTION_TYPE_DRAW_MANY, 1 )
+			AddGunAction( entity_id, card )
+			card_count = card_count - 1
+		end
+
+		if( Random( 0, 100 ) < 80 ) then
+			card = asw_get_random_action_with_type( x, y, level, ACTION_TYPE_MODIFIER, 2 )
+			AddGunAction( entity_id, card )
+			card_count = card_count - 1
+		end
+
+
+		for i=1,card_count do
+			AddGunAction( entity_id, bullet_card )
+		end
+	end
+end
+
 function generate_gun( cost, level, force_unshuffle )
 	local entity_id = GetUpdatedEntityID()
 	local x, y = EntityGetTransform( entity_id )
@@ -191,6 +272,7 @@ function generate_gun( cost, level, force_unshuffle )
 	ComponentSetValue( ability_comp, "item_recoil_recovery_speed", 15.0 ) -- TODO: implement logic for setting this
 
 	asw_wand_add_random_cards( gun, entity_id, level )
+	--asw_vanilla_modified_wand_add_random_cards( gun, entity_id, level )
 
 	local wand = GetWand( gun )
 	SetWandSprite( entity_id, ability_comp, wand.file, wand.grip_x, wand.grip_y, (wand.tip_x - wand.grip_x), (wand.tip_y - wand.grip_y) )

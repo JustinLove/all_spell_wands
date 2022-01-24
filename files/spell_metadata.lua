@@ -1,4 +1,10 @@
-dofile_once("data/scripts/gun/gun_actions.lua")
+dofile_once("data/scripts/gun/gun_enums.lua")
+-- cheatgui loads actions without gun_enums defined, type fields end up nil
+if actions and ModIsEnabled( 'cheatgui' ) then
+	dofile("data/scripts/gun/gun_actions.lua")
+else
+	dofile_once("data/scripts/gun/gun_actions.lua")
+end
 dofile_once("data/scripts/gun/gunaction_generated.lua")
 
 ACTION_DRAW_RELOAD_TIME_INCREASE = 0
@@ -47,6 +53,10 @@ end
 
 function draw_actions( how_many, instant_reload_if_empty )
 	c.action_draw_many_count = how_many
+end
+
+-- Risk of Items
+function add_extra_bullet( count )
 end
 
 function check_recursion( data, rec_ )

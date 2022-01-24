@@ -2,7 +2,7 @@
   name="All Spell Wands"
   description=""
   dont_upload_folders="work"
-  dont_upload_files="notes.md|readme.md"
+  dont_upload_files="notes.md|readme.md|changelog.md"
   tags="gameplay,spells,tweaks"
 > 
 </Mod>

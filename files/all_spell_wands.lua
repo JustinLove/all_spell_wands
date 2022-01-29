@@ -1,4 +1,6 @@
-dofile_once("mods/all_spell_wands/files/spell_metadata.lua")
+function asw_spell_draw( card )
+	return tonumber(GlobalsGetValue( "ASW_SPELL_DRAW_"..card, "0" ))
+end
 
 function asw_random_modifier( x, y, level, i )
 	local crazy = 0
@@ -6,13 +8,12 @@ function asw_random_modifier( x, y, level, i )
 	while crazy < 100 do
 		crazy = crazy + 1
 		card = GetRandomAction( x, y, level, i + crazy*71 )
-		if asw_spell_draw[card] > 0 then
+		if asw_spell_draw( card ) > 0 then
 			return card
 		end
 	end
 	print("we went crazy")
 	return card
-	--return asw_spells_which_draw[Random(1, #asw_spells_which_draw)]
 end
 
 function asw_random_terminal( x, y, level, i )
@@ -21,16 +22,13 @@ function asw_random_terminal( x, y, level, i )
 	while crazy < 100 do
 		crazy = crazy + 1
 		card = GetRandomAction( x, y, level, i + crazy*10 )
-		if asw_spell_draw[card] < 1 then
+		if asw_spell_draw( card ) < 1 then
 			return card
 		end
 	end
 	print("we went crazy")
 	return card
-	--return asw_spells_terminal[Random(1, #asw_spells_terminal)]
 end
-
-asw_setup_spell_draw()
 
 ASW_RANDOM = 1
 ASW_VANILLA_MODIFIED = 2
@@ -97,7 +95,7 @@ function asw_wand_add_random_cards( gun, entity_id, level )
 				card = asw_random_terminal( x, y, level, i )
 			else
 				card = asw_random_modifier( x, y, level, i )
-				actions_per_round = actions_per_round + asw_spell_draw[card]
+				actions_per_round = actions_per_round + asw_spell_draw( card )
 			end
 			actions_per_round = actions_per_round - 1
 			AddGunAction( entity_id, card )

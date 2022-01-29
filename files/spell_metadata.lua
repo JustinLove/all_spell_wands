@@ -9,9 +9,6 @@ dofile_once("data/scripts/gun/gunaction_generated.lua")
 
 ACTION_DRAW_RELOAD_TIME_INCREASE = 0
 
-asw_spell_draw = nil
-asw_spells_which_draw = {}
-asw_spells_terminal = {}
 current_reload_time = 0
 c = {}
 shot_effects = {}
@@ -24,13 +21,8 @@ local function register_draw( action, c )
 	if c == nil then
 		return
 	end
-	asw_spell_draw[action.id] = c.action_draw_many_count
+	GlobalsSetValue( "ASW_SPELL_DRAW_"..action.id, tostring(c.action_draw_many_count) )
 	--print( tostring(action.id) .. " " .. tostring(c.action_draw_many_count) )
-	if c.action_draw_many_count > 0 then
-		table.insert(asw_spells_which_draw, action.id)
-	else
-		table.insert(asw_spells_terminal, action.id)
-	end
 end
 
 function Reflection_RegisterProjectile( entity_filename )
@@ -70,14 +62,6 @@ function create_shot_state()
 end
 
 function asw_setup_spell_draw() 
-	if asw_spell_draw ~= nil then
-		return
-	end
-
-	asw_spell_draw = {}
-	asw_spells_which_draw = {}
-	asw_spells_terminal = {}
-
 	reflecting = true
 	local asw_EntityLoad = EntityLoad
 	EntityLoad = function() end

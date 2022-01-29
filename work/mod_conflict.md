@@ -11,7 +11,7 @@ there may or may not be some more layers to this issue but to be fully honest I'
 
 - Special wands have a bit of code with that reference undefiend values action_count and gun_action
 - Actions use GetUpdatedEntityID which can return garbage when reflecting
-- random modifier should check that the table has entries before calling one
+- Random modifier should check that the table has entries before calling one
 ## Risk of Items
 
 - uses extra gun method add_extra_bullet - fixable

@@ -1,4 +1,7 @@
+local test_time = false
+
 local function test_wands()
+	local start = GameGetRealWorldTimeSinceStarted()
 	local wands = {
 		"data/entities/items/wand_level_01.xml",
 		"data/entities/items/wand_level_01_better.xml",
@@ -31,6 +34,22 @@ local function test_wands()
 	for i, v in ipairs(wands) do
 		EntityLoadCameraBound( v, x, y )
 		x = x + 10
+	end
+	local e = GameGetRealWorldTimeSinceStarted()
+	print( 'test wands', tostring( e - start ) )
+	GamePrint( 'test wands ' .. tostring( e - start ) )
+end
+
+dofile_once("mods/all_spell_wands/files/spell_metadata.lua")
+
+function OnWorldInitialized()
+	if test_time then
+		local start = GameGetRealWorldTimeSinceStarted()
+	end
+	asw_setup_spell_draw()
+	if test_time then
+		local e = GameGetRealWorldTimeSinceStarted()
+		GamePrint( 'setup ' .. tostring( e - start ) )
 	end
 end
 
